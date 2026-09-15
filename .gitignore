@@ -1,0 +1,77 @@
+# ==============================================================================
+# 🙈 GITIGNORE UTAMA — Tourism Booking System
+# Dokumen ini menentukan file/folder mana saja yang TIDAK BOLEH masuk ke Git
+# agar repositori tetap bersih, ringan, dan aman dari pembocoran rahasia.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 🔑 1. File Rahasia & Konfigurasi Lingkungan (Environment Variables)
+# PERINGATAN: Jangan pernah meng-commit file .env yang berisi password asli!
+# ------------------------------------------------------------------------------
+*.env
+*.env.local
+*.env.production
+.env
+backend/.env
+
+# ------------------------------------------------------------------------------
+# 📦 2. Executable / Binary Hasil Build Backend (Golang)
+# Hasil kompilasi program Go tidak perlu di-upload karena dibuat otomatis.
+# ------------------------------------------------------------------------------
+*.exe
+*.exe shadow
+*.dll
+*.so
+*.dylib
+backend/api
+backend/api.exe
+cmd/api/api
+cmd/api/api.exe
+
+# ------------------------------------------------------------------------------
+# 📁 3. Folder Dependensi Node.js & Hasil Build Web (React / Vite)
+# Folder node_modules berisi ribuan paket library yang di-download via npm install.
+# ------------------------------------------------------------------------------
+node_modules/
+web/node_modules/
+web/dist/
+web/dist-ssr/
+.vite/
+
+# ------------------------------------------------------------------------------
+# 📊 4. Hasil Pengujian & Laporan E2E (Playwright)
+# Folder laporan pengujian otomatis tidak perlu dimasukkan ke versi kontrol.
+# ------------------------------------------------------------------------------
+web/playwright-report/
+web/test-results/
+coverage/
+
+# ------------------------------------------------------------------------------
+# 📂 5. File Upload Sementara & Log Aplikasi
+# Catatan aktivitas (log) dan file yang diunggah pengguna saat pengujian.
+# ------------------------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Batasi file upload di backend, tetapi simpan folder uploads/
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ------------------------------------------------------------------------------
+# 💻 6. File Sistem Operasi & Cache Editor / IDE
+# File sampah dari Windows/Mac dan cache internal editor kode (VS Code, Goland).
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

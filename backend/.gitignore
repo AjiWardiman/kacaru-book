@@ -1,0 +1,22 @@
+# 🙈 GITIGNORE BACKEND (Golang API Server)
+# Menyaring file khusus server backend agar tidak masuk ke Git.
+
+# File environment lokal (berisi password & API Key rahasia)
+.env
+.env.local
+
+# Hasil build executable program Go
+api
+api.exe
+*.exe
+*.exe shadow
+*.dll
+*.so
+*.dylib
+
+# File log sistem
+*.log
+
+# File upload sementara dari user (kecuali .gitkeep)
+uploads/*
+!uploads/.gitkeep

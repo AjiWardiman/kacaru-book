@@ -1,0 +1,26 @@
+# 🙈 GITIGNORE FRONTEND (React + Vite Web App)
+# Menyaring file khusus aplikasi web frontend agar tidak masuk ke Git.
+
+# Dependensi library npm (di-download ulang via `npm install`)
+node_modules/
+
+# Hasil build produksi Vite
+dist/
+dist-ssr/
+.vite/
+
+# File log pengujian & log error npm
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Hasil testing Playwright E2E
+playwright-report/
+test-results/
+
+# File konfigurasi lingkungan frontend (jika ada)
+*.local
+.env.local

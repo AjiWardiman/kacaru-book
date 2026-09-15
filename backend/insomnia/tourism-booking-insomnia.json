@@ -1,0 +1,581 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-09-14T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_tourism_booking",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Tourism Booking System API",
+      "description": "Koleksi Lengkap Request API untuk Tugas Akhir Tourism Booking System Bima",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_tourism_booking",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "token": "TEMPEL_TOKEN_JWT_DI_SINI",
+        "destination_id": "1",
+        "booking_id": "1",
+        "user_id": "1"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "token", "destination_id", "booking_id", "user_id"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1
+    },
+
+    {
+      "_id": "fld_1_health",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "1. Health Check",
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "fld_1_health",
+      "name": "Health Check Status Server",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "metaSortKey": 1
+    },
+
+    {
+      "_id": "fld_2_auth",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "2. Auth (Register & Login)",
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_auth_register",
+      "_type": "request",
+      "parentId": "fld_2_auth",
+      "name": "Register User Baru",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/register",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Budi Santoso\",\n  \"email\": \"budi.user@example.com\",\n  \"phone\": \"089988776655\",\n  \"password\": \"password123\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_auth_login_admin",
+      "_type": "request",
+      "parentId": "fld_2_auth",
+      "name": "Login - Admin (Aji)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"identifier\": \"aji@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_auth_login_user",
+      "_type": "request",
+      "parentId": "fld_2_auth",
+      "name": "Login - Customer (Budi)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"identifier\": \"budi.user@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "metaSortKey": 3
+    },
+
+    {
+      "_id": "fld_3_public_destinations",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "3. Destinations & Slots (Publik)",
+      "metaSortKey": 3
+    },
+    {
+      "_id": "req_pub_list_destinations",
+      "_type": "request",
+      "parentId": "fld_3_public_destinations",
+      "name": "Get List Destinations",
+      "method": "GET",
+      "url": "{{ _.base_url }}/destinations",
+      "body": {},
+      "headers": [],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_pub_get_destination_detail",
+      "_type": "request",
+      "parentId": "fld_3_public_destinations",
+      "name": "Get Destination Detail by ID",
+      "method": "GET",
+      "url": "{{ _.base_url }}/destinations/{{ _.destination_id }}",
+      "body": {},
+      "headers": [],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_pub_list_slots",
+      "_type": "request",
+      "parentId": "fld_3_public_destinations",
+      "name": "Get Slots by Destination ID",
+      "method": "GET",
+      "url": "{{ _.base_url }}/destinations/{{ _.destination_id }}/slots",
+      "body": {},
+      "headers": [],
+      "metaSortKey": 3
+    },
+
+    {
+      "_id": "fld_4_ai_weather",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "4. Fitur AI & Weather (Publik)",
+      "metaSortKey": 4
+    },
+    {
+      "_id": "req_weather",
+      "_type": "request",
+      "parentId": "fld_4_ai_weather",
+      "name": "Get Weather Forecast (OpenWeatherMap)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/weather?location=Bima, NTB",
+      "body": {},
+      "headers": [],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_ai_recommendations",
+      "_type": "request",
+      "parentId": "fld_4_ai_weather",
+      "name": "POST AI Destination Recommendation",
+      "method": "POST",
+      "url": "{{ _.base_url }}/recommendations",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"max_budget\": 50000,\n  \"category\": \"Bahari\",\n  \"guests\": 2,\n  \"preference\": \"pantai pasir putih bersunset indah\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "metaSortKey": 2
+    },
+
+    {
+      "_id": "fld_5_admin_management",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "5. Admin Management (Destinations & Slots)",
+      "metaSortKey": 5
+    },
+    {
+      "_id": "req_admin_create_destination",
+      "_type": "request",
+      "parentId": "fld_5_admin_management",
+      "name": "Create Destination (Admin)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/admin/destinations",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Pantai Lariti Baru\",\n  \"location\": \"Kecamatan Sape, Kabupaten Bima\",\n  \"description\": \"Pantai indah dengan pasir putih membelah laut\",\n  \"category\": \"Bahari\",\n  \"price\": 15000,\n  \"image_url\": \"/uploads/destinations/lariti.jpg\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_admin_update_destination",
+      "_type": "request",
+      "parentId": "fld_5_admin_management",
+      "name": "Update Destination (Admin)",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/admin/destinations/{{ _.destination_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"price\": 20000,\n  \"is_active\": true\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_admin_create_slot",
+      "_type": "request",
+      "parentId": "fld_5_admin_management",
+      "name": "Create Slot Jadwal (Admin)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/admin/destinations/{{ _.destination_id }}/slots",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"date\": \"2026-09-25\",\n  \"total_quota\": 50\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 3
+    },
+    {
+      "_id": "req_admin_delete_destination",
+      "_type": "request",
+      "parentId": "fld_5_admin_management",
+      "name": "Delete Destination (Admin)",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/admin/destinations/{{ _.destination_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 4
+    },
+
+    {
+      "_id": "fld_6_booking_payment",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "6. Booking & Payment Xendit (Wajib Login)",
+      "metaSortKey": 6
+    },
+    {
+      "_id": "req_booking_create",
+      "_type": "request",
+      "parentId": "fld_6_booking_payment",
+      "name": "Create Booking Baru",
+      "method": "POST",
+      "url": "{{ _.base_url }}/bookings",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"slot_id\": 1,\n  \"total_people\": 2,\n  \"visitors\": [\n    {\"name\": \"Budi Santoso\", \"phone\": \"08111122233\", \"email\": \"budi@test.com\", \"age\": 30},\n    {\"name\": \"Ani Wijaya\", \"phone\": \"08222233344\", \"email\": \"ani@test.com\", \"age\": 28}\n  ]\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_booking_my_list",
+      "_type": "request",
+      "parentId": "fld_6_booking_payment",
+      "name": "Get My Bookings (Customer)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/bookings/my-bookings",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_payment_create_link",
+      "_type": "request",
+      "parentId": "fld_6_booking_payment",
+      "name": "Create Payment Link Xendit",
+      "method": "POST",
+      "url": "{{ _.base_url }}/bookings/{{ _.booking_id }}/pay",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 3
+    },
+    {
+      "_id": "req_webhook_xendit",
+      "_type": "request",
+      "parentId": "fld_6_booking_payment",
+      "name": "Xendit Callback Webhook",
+      "method": "POST",
+      "url": "{{ _.base_url }}/webhooks/xendit",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"id\": \"5f3d790d9a5b671a5c689d01\",\n  \"external_id\": \"INV-12345678\",\n  \"status\": \"PAID\",\n  \"paid_amount\": 30000,\n  \"payment_method\": \"BANK_TRANSFER\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "x-callback-token", "value": "xnd_callback_dummytoken" }
+      ],
+      "metaSortKey": 4
+    },
+
+    {
+      "_id": "fld_7_otp",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "7. OTP Verifikasi HP (Wajib Login)",
+      "metaSortKey": 7
+    },
+    {
+      "_id": "req_otp_request_code",
+      "_type": "request",
+      "parentId": "fld_7_otp",
+      "name": "POST Request OTP Code",
+      "method": "POST",
+      "url": "{{ _.base_url }}/otp/request",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_otp_verify_code",
+      "_type": "request",
+      "parentId": "fld_7_otp",
+      "name": "POST Verify OTP Code",
+      "method": "POST",
+      "url": "{{ _.base_url }}/otp/verify",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"code\": \"123456\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 2
+    },
+
+    {
+      "_id": "fld_8_reports",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "8. Laporan & Analytics (Admin Only)",
+      "metaSortKey": 8
+    },
+    {
+      "_id": "req_report_summary",
+      "_type": "request",
+      "parentId": "fld_8_reports",
+      "name": "Get Report Summary (Analytics)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/reports/summary",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_report_export_excel",
+      "_type": "request",
+      "parentId": "fld_8_reports",
+      "name": "Export Report Excel (CSV)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/reports/export/excel?token={{ _.token }}",
+      "headers": [],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_report_export_pdf",
+      "_type": "request",
+      "parentId": "fld_8_reports",
+      "name": "Export Report PDF (Siap Cetak)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/reports/export/pdf?token={{ _.token }}",
+      "headers": [],
+      "metaSortKey": 3
+    },
+
+    {
+      "_id": "fld_9_users_admin",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "9. User Management (Admin Only)",
+      "metaSortKey": 9
+    },
+    {
+      "_id": "req_users_list",
+      "_type": "request",
+      "parentId": "fld_9_users_admin",
+      "name": "Get List Users",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/users",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_users_get_by_id",
+      "_type": "request",
+      "parentId": "fld_9_users_admin",
+      "name": "Get User Detail by ID",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/users/{{ _.user_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_users_create",
+      "_type": "request",
+      "parentId": "fld_9_users_admin",
+      "name": "Create User Baru (Admin)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/admin/users",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Wisatawan Baru\",\n  \"email\": \"wisatawan.baru@example.com\",\n  \"phone\": \"081299887766\",\n  \"password\": \"password123\",\n  \"role\": \"customer\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 3
+    },
+    {
+      "_id": "req_users_update",
+      "_type": "request",
+      "parentId": "fld_9_users_admin",
+      "name": "Update User (Admin)",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/admin/users/{{ _.user_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Wisatawan Terupdate\",\n  \"role\": \"customer\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 4
+    },
+    {
+      "_id": "req_users_delete",
+      "_type": "request",
+      "parentId": "fld_9_users_admin",
+      "name": "Delete User (Admin)",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/admin/users/{{ _.user_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 5
+    },
+
+    {
+      "_id": "fld_10_settings",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "10. Settings / Pengaturan (Admin Only)",
+      "metaSortKey": 10
+    },
+    {
+      "_id": "req_settings_list",
+      "_type": "request",
+      "parentId": "fld_10_settings",
+      "name": "Get All Settings",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/settings",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_settings_get_by_key",
+      "_type": "request",
+      "parentId": "fld_10_settings",
+      "name": "Get Setting Detail by Key",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/settings/otp_expiry_minutes",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 2
+    },
+    {
+      "_id": "req_settings_update_value",
+      "_type": "request",
+      "parentId": "fld_10_settings",
+      "name": "Update Setting Value",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/admin/settings/otp_expiry_minutes",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"value\": \"10\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 3
+    },
+
+    {
+      "_id": "fld_11_upload",
+      "_type": "request_group",
+      "parentId": "wrk_tourism_booking",
+      "name": "11. File Upload",
+      "metaSortKey": 11
+    },
+    {
+      "_id": "req_upload_avatar",
+      "_type": "request",
+      "parentId": "fld_11_upload",
+      "name": "Upload Foto Profil / Avatar (Semua User)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/upload",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "file",
+            "type": "file",
+            "fileName": ""
+          }
+        ]
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 1
+    },
+    {
+      "_id": "req_upload_destination_image",
+      "_type": "request",
+      "parentId": "fld_11_upload",
+      "name": "Upload Foto Destinasi Wisata (Khusus Admin)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/admin/destinations/upload",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "file",
+            "type": "file",
+            "fileName": ""
+          }
+        ]
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": 2
+    }
+  ]
+}

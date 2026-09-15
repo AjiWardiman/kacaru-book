@@ -1,0 +1,941 @@
+basePath: /
+definitions:
+  dto.APIResponse:
+    properties:
+      data:
+        description: 'isi data hasil (bisa berupa apa saja: object, array, dll)'
+      error:
+        description: pesan error, kosong kalau sukses
+        type: string
+      message:
+        description: pesan sukses, kosong kalau gagal
+        type: string
+      success:
+        description: true kalau request berhasil, false kalau gagal
+        type: boolean
+    type: object
+  dto.AuthResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserResponse'
+    type: object
+  dto.BookingResponse:
+    properties:
+      booked_at:
+        type: string
+      booking_code:
+        type: string
+      expired_at:
+        description: batas waktu bayar sebelum booking otomatis gagal
+        type: string
+      id:
+        type: integer
+      slot_id:
+        type: integer
+      status:
+        type: string
+      total_people:
+        type: integer
+      total_price:
+        type: number
+    type: object
+  dto.CreateBookingRequest:
+    properties:
+      slot_id:
+        type: integer
+      total_people:
+        type: integer
+      visitors:
+        items:
+          $ref: '#/definitions/dto.VisitorInput'
+        type: array
+    type: object
+  dto.CreateDestinationRequest:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      image_url:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dto.CreateSlotRequest:
+    properties:
+      date:
+        description: 'format tanggal: "YYYY-MM-DD", contoh "2026-09-20"'
+        type: string
+      total_quota:
+        description: jumlah maksimal pengunjung yang boleh booking di tanggal ini
+        type: integer
+    type: object
+  dto.DestinationResponse:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_active:
+        type: boolean
+      location:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dto.LoginRequest:
+    properties:
+      identifier:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.PaymentResponse:
+    properties:
+      amount:
+        type: number
+      booking_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      payment_url:
+        description: link yang harus dibuka user untuk membayar
+        type: string
+      status:
+        type: string
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        description: opsional, boleh dikosongkan client
+        type: string
+    type: object
+  dto.RequestOTPResponse:
+    properties:
+      expires_in_minutes:
+        type: integer
+      message:
+        type: string
+    type: object
+  dto.SettingResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      key:
+        type: string
+      updated_at:
+        type: string
+      value:
+        type: string
+    type: object
+  dto.SlotResponse:
+    properties:
+      date:
+        type: string
+      destination_id:
+        type: integer
+      id:
+        type: integer
+      is_available:
+        type: boolean
+      remaining_quota:
+        description: sisa kuota yang masih bisa dibooking
+        type: integer
+      total_quota:
+        type: integer
+      used_quota:
+        type: integer
+    type: object
+  dto.UpdateDestinationRequest:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      image_url:
+        type: string
+      is_active:
+        type: boolean
+      location:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dto.UpdateSettingRequest:
+    properties:
+      value:
+        type: string
+    type: object
+  dto.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone:
+        description: '"omitempty" = field ini disembunyikan dari JSON kalau kosong'
+        type: string
+      phone_verified_at:
+        type: string
+      role:
+        type: string
+    type: object
+  dto.VerifyOTPRequest:
+    properties:
+      code:
+        type: string
+    type: object
+  dto.VisitorInput:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Documentation for Tourism Booking System (Bootcamp Final Project).
+  title: Tourism Booking System API
+  version: "1.0"
+paths:
+  /admin/destinations:
+    post:
+      consumes:
+      - application/json
+      description: Membuat data destinasi wisata baru
+      parameters:
+      - description: Data Destinasi
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateDestinationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Destinasi berhasil dibuat
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.DestinationResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "403":
+          description: Forbidden (Admin only)
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Membuat destinasi wisata baru (Admin-only)
+      tags:
+      - Destinations
+  /admin/destinations/{id}:
+    delete:
+      description: Menghapus destinasi wisata berdasarkan ID
+      parameters:
+      - description: ID Destinasi
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Destinasi berhasil dihapus
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: ID tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Destinasi tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Menghapus destinasi wisata (Admin-only)
+      tags:
+      - Destinations
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui data destinasi wisata berdasarkan ID
+      parameters:
+      - description: ID Destinasi
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data Perubahan Destinasi
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateDestinationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Destinasi berhasil diubah
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.DestinationResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Destinasi tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Mengubah data destinasi wisata (Admin-only)
+      tags:
+      - Destinations
+  /admin/destinations/{id}/slots:
+    post:
+      consumes:
+      - application/json
+      description: Membuat slot kuota kunjungan untuk destinasi tertentu di tanggal
+        spesifik
+      parameters:
+      - description: ID Destinasi
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data Slot (Tanggal & Kuota)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSlotRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Slot berhasil dibuat
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SlotResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "409":
+          description: Slot untuk tanggal tersebut sudah ada
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Membuat slot jadwal kunjungan baru (Admin-only)
+      tags:
+      - Slots
+  /admin/settings:
+    get:
+      description: Menampilkan semua daftar pengaturan aplikasi
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar pengaturan aplikasi
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.SettingResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "403":
+          description: Forbidden (Admin only)
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Mengambil daftar pengaturan aplikasi (Admin-only)
+      tags:
+      - Settings
+  /admin/settings/{key}:
+    get:
+      description: Menampilkan detail satu pengaturan berdasarkan nama Key
+      parameters:
+      - description: 'Nama Key Setting (misal: otp_expiry_minutes)'
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detail pengaturan aplikasi
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SettingResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Setting tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Mengambil detail pengaturan aplikasi berdasarkan Key (Admin-only)
+      tags:
+      - Settings
+    put:
+      consumes:
+      - application/json
+      description: Mengubah nilai dari satu pengaturan aplikasi berdasarkan Key
+      parameters:
+      - description: 'Nama Key Setting (misal: otp_expiry_minutes)'
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Nilai baru setting
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateSettingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Setting berhasil diubah
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SettingResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Setting tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Memperbarui nilai pengaturan aplikasi (Admin-only)
+      tags:
+      - Settings
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authentikasi menggunakan email/nomor HP dan password
+      parameters:
+      - description: Data Login
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login berhasil
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AuthResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Kredensial tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Login user / admin
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Pendaftaran akun pengguna baru (role default 'user')
+      parameters:
+      - description: Data Registrasi
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Pendaftaran berhasil
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AuthResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "409":
+          description: Email atau nomor HP sudah terdaftar
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Register user baru
+      tags:
+      - Auth
+  /bookings:
+    post:
+      consumes:
+      - application/json
+      description: Membuat booking baru untuk slot destinasi tertentu (Wajib Login)
+      parameters:
+      - description: Data Pemesanan & Pengunjung
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Booking berhasil dibuat
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.BookingResponse'
+              type: object
+        "400":
+          description: Data tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Slot tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "409":
+          description: Slot tidak tersedia / kuota tidak cukup
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Membuat pemesanan/booking destinasi wisata
+      tags:
+      - Bookings
+  /bookings/{id}/pay:
+    post:
+      description: Membuat invoice pembayaran Xendit baru untuk booking yang berstatus
+        pending (Wajib Login)
+      parameters:
+      - description: ID Booking
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Link pembayaran berhasil dibuat
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PaymentResponse'
+              type: object
+        "400":
+          description: ID booking tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "403":
+          description: Booking bukan milik Anda
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Booking tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "409":
+          description: Status booking tidak valid / pembayaran sudah ada
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Membuat link pembayaran Xendit untuk booking
+      tags:
+      - Payments
+  /destinations:
+    get:
+      description: Mengambil daftar destinasi wisata (Publik)
+      parameters:
+      - description: Tampilkan semua destinasi termasuk non-aktif (Admin)
+        in: query
+        name: all
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar destinasi
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.DestinationResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Mengambil daftar destinasi wisata
+      tags:
+      - Destinations
+  /destinations/{id}:
+    get:
+      description: Mengambil detail destinasi wisata berdasarkan ID (Publik)
+      parameters:
+      - description: ID Destinasi
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detail destinasi
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.DestinationResponse'
+              type: object
+        "400":
+          description: ID tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Destinasi tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Mengambil detail destinasi wisata
+      tags:
+      - Destinations
+  /destinations/{id}/slots:
+    get:
+      description: Mengambil daftar slot jadwal dan sisa kuota untuk destinasi tertentu
+        (Publik)
+      parameters:
+      - description: ID Destinasi
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar slot kunjungan
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.SlotResponse'
+                  type: array
+              type: object
+        "400":
+          description: ID destinasi tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Mengambil daftar slot kunjungan destinasi
+      tags:
+      - Slots
+  /otp/request:
+    post:
+      description: Mengirim kode OTP baru ke email user untuk verifikasi HP (Wajib
+        Login)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Kode OTP berhasil dikirim
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RequestOTPResponse'
+              type: object
+        "400":
+          description: Nomor HP belum diisi
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "409":
+          description: Nomor HP sudah terverifikasi
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Meminta kode OTP untuk verifikasi nomor HP
+      tags:
+      - OTP
+  /otp/verify:
+    post:
+      consumes:
+      - application/json
+      description: Mencocokkan kode OTP yang dikirim user dengan kode aktif di database
+        (Wajib Login)
+      parameters:
+      - description: Kode OTP
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.VerifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Nomor HP berhasil diverifikasi
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Kode OTP salah / kadaluarsa / tidak aktif
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Verifikasi kode OTP nomor HP
+      tags:
+      - OTP
+  /webhooks/xendit:
+    post:
+      consumes:
+      - application/json
+      description: Callback endpoint yang dipanggil oleh server Xendit saat ada perubahan
+        status invoice
+      parameters:
+      - description: Xendit Callback Token
+        in: header
+        name: x-callback-token
+        required: true
+        type: string
+      - description: Xendit Callback Payload JSON
+        in: body
+        name: payload
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Webhook berhasil diproses
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Body webhook tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Callback token tidak valid
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "404":
+          description: Data pembayaran tidak ditemukan
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Receive Xendit payment webhook callback
+      tags:
+      - Payments
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer <your_jwt_token>" to authenticate.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
