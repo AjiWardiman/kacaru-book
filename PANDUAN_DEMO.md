@@ -97,7 +97,7 @@ Sebelum memanggil Trainer / Penguji, pastikan hal-hal berikut sudah siap di komp
 
 ---
 
-## 🛡️ TANGKISAN PERTANYAAN SIDANG (Q&A DEFENSE FOR TRAINER)
+## 🛡️ TANGKISAN PERTANYAAN DEMO PROYEK (Q&A DEFENSE FOR TRAINER)
 
 Berikut adalah pertanyaan yang paling sering ditanyakan Penguji dan jawaban terbaiknya:
 
@@ -119,7 +119,7 @@ Berikut adalah pertanyaan yang paling sering ditanyakan Penguji dan jawaban terb
 
 ---
 
-## 💻 TIPS MEMBUKA "INSPECT ELEMENT" (F12) SAAT SIDANG
+## 💻 TIPS MEMBUKA "INSPECT ELEMENT" (F12) SAAT DEMO APLIKASI
 
 Jika Trainer/Penguji meminta Anda membuka **F12 / Inspect Element**:
 

@@ -7,7 +7,7 @@
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_14+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 
 > 👨‍💻 **Pengembang (Developer):** **Aji Wardiman**  
-> 🎓 **Status Proyek:** Tugas Akhir Bootcamp Backend Golang & Web Application  
+> 🎓 **Status Proyek:** Tugas Akhir Backend Golang Batch 2  
 > 🔗 **Repositori:** [Kacaru Book](https://github.com/AjiWardiman/kacaru-book)
 
 ---
@@ -31,7 +31,7 @@ Berikut adalah tautan resmi dokumen perancangan, slide presentasi, dan rekaman v
 6. [Skema Database (PostgreSQL)](#-skema-database-postgresql)
 7. [Panduan Instalasi & Konfigurasi Environment](#-panduan-instalasi--konfigurasi-environment)
 8. [Panduan Pengujian (Testing)](#-panduan-pengujian-testing)
-9. [Panduan Presentasi & Demo Sidang](#-panduan-presentasi--demo-sidang)
+9. [Panduan Presentasi & Demo Aplikasi](#-panduan-presentasi--demo-aplikasi)
 10. [Profil Pengembang](#-profil-pengembang)
 
 ---
@@ -286,8 +286,8 @@ npm run test:e2e
 
 ---
 
-## 📑 PANDUAN PRESENTASI & DEMO SIDANG
-Untuk alur demonstrasi praktis, script penjelasan di depan penguji, serta tangkisan pertanyaan Q&A sidang, silakan baca file **[PANDUAN_DEMO.md](file:///e:/Golang/tugas-akhir/tourism-booking/PANDUAN_DEMO.md)**.
+## 📑 PANDUAN PRESENTASI & DEMO APLIKASI
+Untuk alur demonstrasi praktis, script penjelasan di depan penguji, serta tangkisan pertanyaan Q&A, silakan baca file **[PANDUAN_DEMO.md](file:///e:/Golang/tugas-akhir/tourism-booking/PANDUAN_DEMO.md)**.
 
 ---
 
@@ -298,7 +298,7 @@ Untuk alur demonstrasi praktis, script penjelasan di depan penguji, serta tangki
 ### **Aji Wardiman**
 *Fullstack Software Engineer / Golang & React Developer*
 
-**Tugas Akhir Bootcamp Tourism Booking System**  
+**Tugas Akhir Backend Golang Batch 2**  
 Teknologi: Golang, Gin, GORM, PostgreSQL, React 19, TypeScript, Tailwind CSS.
 
 ---
