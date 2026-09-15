@@ -8,7 +8,7 @@
 
 > 👨‍💻 **Pengembang (Developer):** **Aji Wardiman**  
 > 🎓 **Status Proyek:** Tugas Akhir Bootcamp Backend Golang & Web Application  
-> 🔗 **Repositori:** [Tourism Booking System](https://github.com/AjiWardiman/tourism-booking)
+> 🔗 **Repositori:** [Kacaru Book](https://github.com/AjiWardiman/kacaru-book)
 
 ---
 
