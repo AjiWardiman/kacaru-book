@@ -30,10 +30,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initAuth: () => {
     const token = localStorage.getItem('kacaru_token');
     const userStr = localStorage.getItem('kacaru_user');
+    const isPendingOTP = localStorage.getItem('kacaru_pending_otp') === 'true';
+
     if (token && userStr && userStr !== 'undefined' && userStr !== 'null') {
       try {
         const user = JSON.parse(userStr);
         if (user && user.id && user.role) {
+          // Jika verifikasi OTP masih tertunda, jangan biarkan bypass login!
+          if (isPendingOTP) {
+            set({ token, user, isAuthenticated: false });
+            return;
+          }
           set({ token, user, isAuthenticated: true });
           return;
         }
@@ -43,6 +50,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
     localStorage.removeItem('kacaru_token');
     localStorage.removeItem('kacaru_user');
+    localStorage.removeItem('kacaru_pending_otp');
     set({ token: null, user: null, isAuthenticated: false });
   },
 
@@ -71,6 +79,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const { token, user } = resData.data;
         localStorage.setItem('kacaru_token', token);
         localStorage.setItem('kacaru_user', JSON.stringify(user));
+        localStorage.removeItem('kacaru_pending_otp');
 
         set({
           token,
@@ -107,6 +116,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const { token, user } = resData.data;
         localStorage.setItem('kacaru_token', token);
         localStorage.setItem('kacaru_user', JSON.stringify(user));
+        localStorage.setItem('kacaru_pending_otp', 'true');
         set({
           token: token,
           user: user,
@@ -126,6 +136,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   completeAuth: () => {
+    localStorage.removeItem('kacaru_pending_otp');
     set({ isAuthenticated: true });
   },
 
@@ -194,6 +205,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: () => {
     localStorage.removeItem('kacaru_token');
     localStorage.removeItem('kacaru_user');
+    localStorage.removeItem('kacaru_pending_otp');
     set({ user: null, token: null, isAuthenticated: false, error: null });
   },
 

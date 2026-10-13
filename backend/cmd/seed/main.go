@@ -74,7 +74,7 @@ func main() {
 	}
 
 	for i := range users {
-		db.Where("email = ?", users[i].Email).FirstOrCreate(&users[i])
+		db.Where("email = ?", users[i].Email).Assign(model.User{Role: users[i].Role, Password: users[i].Password}).FirstOrCreate(&users[i])
 	}
 	log.Printf("✅ Seeder 25 Akun Users (1 Admin + 24 Customers) berhasil disiapkan!")
 

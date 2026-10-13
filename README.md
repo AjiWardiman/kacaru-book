@@ -1,10 +1,11 @@
 # 🌴 Tourism Booking System — Sistem Reservasi Tempat Wisata Digital
 
-![Go](https://img.shields.io/badge/Backend-Golang_1.20+-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![Go](https://img.shields.io/badge/Backend-Golang_1.25+-00ADD8?style=for-the-badge&logo=go&logoColor=white)
 ![React](https://img.shields.io/badge/Frontend-React_19_TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Bundler-Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Styling-Tailwind_v4-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_14+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Container-Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 > 👨‍💻 **Pengembang (Developer):** **Aji Wardiman**  
 > 🎓 **Status Proyek:** Tugas Akhir Backend Golang Batch 2  
@@ -27,12 +28,14 @@ Berikut adalah tautan resmi dokumen perancangan, slide presentasi, dan rekaman v
 2. [Latar Belakang Proyek](#-latar-belakang-proyek)
 3. [Fitur-Fitur Unggulan](#-fitur-fitur-unggulan)
 4. [Arsitektur Sistem & Alur Data](#-arsitektur-sistem--alur-data)
-5. [Tabel Dokumentasi API Endpoints](#-tabel-dokumentasi-api-endpoints)
-6. [Skema Database (PostgreSQL)](#-skema-database-postgresql)
-7. [Panduan Instalasi & Konfigurasi Environment](#-panduan-instalasi--konfigurasi-environment)
-8. [Panduan Pengujian (Testing)](#-panduan-pengujian-testing)
-9. [Panduan Presentasi & Demo Aplikasi](#-panduan-presentasi--demo-aplikasi)
-10. [Profil Pengembang](#-profil-pengembang)
+5. [Status Integrasi Frontend & Backend](#-status-integrasi-frontend--backend)
+6. [Tabel Dokumentasi API Endpoints](#-tabel-dokumentasi-api-endpoints)
+7. [Skema Database (PostgreSQL)](#-skema-database-postgresql)
+8. [Panduan Instalasi & Konfigurasi Environment](#-panduan-instalasi--konfigurasi-environment)
+9. [Menjalankan dengan Docker](#-menjalankan-dengan-docker)
+10. [Panduan Pengujian (Testing)](#-panduan-pengujian-testing)
+11. [Panduan Presentasi & Demo Aplikasi](#-panduan-presentasi--demo-aplikasi)
+12. [Profil Pengembang](#-profil-pengembang)
 
 ---
 
@@ -148,15 +151,48 @@ graph TD
 ```mermaid
 stateDiagram-v2
     [*] --> PENDING: User Membuat Booking
-    PENDING --> PAID: Bayar via Xendit Webhook
-    PENDING --> EXPIRED: Batas Waktu Bayar Habis (Worker Expire)
-    PENDING --> CANCELLED: User Membatalkan Pesanan
+    PENDING --> PAID: Pembayaran Berhasil (Webhook Xendit / Simulasi)
+    PENDING --> EXPIRED: Batas Waktu Bayar Habis (Worker Auto-Expire)
     PAID --> E_TICKET_ISSUED: E-Ticket QR Code Diterbitkan
-    EXPIRED --> QUOTA_RESTORED: Kuota Tiket Dikembalikan
-    CANCELLED --> QUOTA_RESTORED: Kuota Tiket Dikembalikan
+    EXPIRED --> QUOTA_RESTORED: Kuota Tiket Dikembalikan Otomatis (Worker)
     E_TICKET_ISSUED --> [*]
     QUOTA_RESTORED --> [*]
 ```
+
+---
+
+## 🔄 STATUS INTEGRASI FRONTEND & BACKEND
+
+Seluruh fitur backend telah selesai dibangun dan dapat diakses serta diuji secara penuh melalui **REST API** (terdokumentasi interaktif di [Swagger UI](http://localhost:8080/swagger/index.html) dan Insomnia Collection).
+
+Berdasarkan hasil verifikasi pada antarmuka web (Frontend React), berikut adalah pemetaan status integrasi fitur:
+
+### 1. ✅ Fitur Terintegrasi Penuh (Frontend Web & Backend API)
+Fitur-fitur berikut telah memiliki antarmuka pengguna visual dan terhubung dengan backend:
+- **Autentikasi & Verifikasi OTP:** Registrasi, Login pengguna/admin, dan modal verifikasi kode OTP 6-digit.
+- **Katalog & Detail Destinasi:** Jelajah destinasi wisata, pencarian instan, filter kategori, dan modal detail informasi tempat wisata.
+- **Prakiraan Cuaca Realtime (OpenWeatherMap):** Penampil ramalan cuaca, suhu, kelembapan, dan *safety warning* otomatis pada detail destinasi.
+- **AI Recommendation Engine (OpenRouter):** Konsultasi pemilihan wisata berdasarkan anggaran (*budget*) dan kategori favorit via modal AI Asisten interaktif.
+- **Pemesanan Tiket Anti-Bentrok:** Formulir pemesanan tiket pengunjung yang menjalankan *Database Row Locking* (`SELECT ... FOR UPDATE`).
+- **Pembayaran Xendit & Simulasi Pelunasan:** Pembuatan invoice pembayaran serta modal simulasi pelunasan langsung di web.
+- **E-Ticket Digital (QR Code):** Halaman "Tiket Saya" yang menampilkan status lunas dan tiket digital ber-QR Code siap unduh/cetak.
+- **Dashboard Analytics Admin:** Panel ringkasan statistik total pendapatan, jumlah transaksi, dan visualisasi grafik performa bisnis.
+- **Export Laporan Transaksi (PDF & Excel):** Tombol "Export Excel" (`.xlsx`) dan "Export PDF" (`.pdf`) pada menu Laporan Admin yang langsung memicu unduhan berkas laporan dari backend.
+- **CRUD Destinasi oleh Admin:** Antarmuka formulir tambah, edit, dan hapus tempat wisata untuk pengguna ber-role Administrator.
+- **Manajemen Pemesanan & Pengguna:** Tabel monitoring data reservasi tiket serta manajemen data akun pengguna platform.
+
+### 2. ⏳ Hanya Tersedia via REST API / Swagger (Belum Ada Tampilan di Frontend)
+Fitur-fitur berikut telah selesai dan siap diuji secara penuh di backend via Swagger / REST API, namun belum memiliki antarmuka khusus (*dedicated UI*) di frontend:
+- **Pengelolaan & Monitoring Slot Kuota oleh Admin (`POST /admin/destinations/:id/slots`):**  
+  - **Tampilan Utama Web (Katalog):** Pada kartu destinasi saat membuka web, angka jumlah kuota slot **tidak ditampilkan** (hanya berlabel indikator umum *"⚡ Kuota Tersedia Harian"*, karena kuota bersifat dinamis per tanggal kunjungan pada tabel `slots`).
+  - **Modal Pemesanan Tiket:** Sisa kuota baru dicek dan dimuat secara dinamis via API (`GET /destinations/:id/slots`) ketika wisatawan membuka formulir modal pemesanan tiket untuk memilih tanggal.
+  - **Panel Admin:** Belum tersedia formulir antarmuka bagi admin untuk menambah, mengubah, atau menutup slot kuota tanggal secara mandiri di web (pengelolaan slot admin sepenuhnya dilakukan via REST API / Swagger atau diinisialisasi melalui *seeder* database).
+- **Manajemen Master Kategori Destinasi (`categories` & `destination_categories`):**  
+  Pada frontend, kategori destinasi saat ini dipilih melalui dropdown/filter statis pada form destinasi; belum tersedia halaman CRUD khusus bagi admin untuk mengelola data entitas master tabel kategori secara mandiri.
+- **Inspeksi Log Audit & Pengaturan Sistem Dinamis (`audit_logs` & `settings`):**  
+  Fitur pencatatan riwayat audit perubahan data sensitif serta konfigurasi durasi sistem beroperasi secara otomatis di tingkat backend/database tanpa panel visual khusus di frontend.
+- **Pekerja Latar Belakang Otomatis (Background Worker):**  
+  Goroutine *Booking Expiry Worker* (otomatis membatalkan pesanan kadaluarsa & memulihkan kuota) dan *Audit Log Retention Worker* bekerja di latar belakang sistem tanpa memerlukan tindakan di antarmuka web.
 
 ---
 
@@ -187,24 +223,27 @@ stateDiagram-v2
 
 ## 🗄️ SKEMA DATABASE (POSTGRESQL)
 
-Database `tourism_booking` terdiri dari 13 tabel utama:
-1. `users` — Data pengguna (Nama, Email, Phone, Password Hash, Role, Email Verified).
-2. `destinations` — Data tempat wisata (Nama, Deskripsi, Lokasi, Harga, Rating, Gambar).
-3. `slots` — Slot kunjungan harian per destinasi (Tanggal, Kuota Maksimal, Terpaksa).
-4. `bookings` — Data pemesanan (User ID, Slot ID, Kode Booking, Total Harga, Status).
-5. `payments` — Data invoice pembayaran Xendit (Invoice ID, Payment URL, Channel).
-6. `payment_events` — Log peristiwa webhook pembayaran Xendit.
-7. `notifications` — Notifikasi sistem pengguna (Judul, Pesan, Status Dibaca).
-8. `audit_logs` — Rekam jejak aktivitas perubahan data sensitif oleh pengguna/admin.
-9. `settings` — Pengaturan dinamis aplikasi (Masa berlaku OTP, dsb).
-10. `otps` — Penyimpanan kode OTP verifikasi berbatas waktu.
+Database `tourism_booking` terdiri dari 13 tabel utama (didefinisikan pada `backend/migrations/001_init.sql`):
+1. `users` — Data akun pengguna & admin (Nama, Email, No HP, Phone Verified, Password Hash, Role).
+2. `categories` — Kategori destinasi wisata (Nama Kategori, Deskripsi, Status Aktif).
+3. `destinations` — Data tempat wisata (Nama, Lokasi, Deskripsi, Kategori, Harga, Gambar, Status Aktif, Admin Pembuat).
+4. `destination_categories` — Tabel relasi *many-to-many* antara destinasi dan kategori.
+5. `slots` — Slot jadwal kunjungan harian per destinasi (Tanggal, Kuota Total, Kuota Terpakai, Status Ketersediaan).
+6. `bookings` — Data pemesanan tiket (User ID, Slot ID, Kode Booking, Total Pengunjung, Total Harga, Status, Expired At).
+7. `booking_details` — Detail data setiap pengunjung dalam rombongan booking (Nama Pengunjung, No HP, Email, Usia).
+8. `payments` — Data transaksi pembayaran Xendit (Booking ID, External ID, Invoice ID, Jumlah, Metode Bayar, Status, URL Bayar).
+9. `payment_events` — Log rekaman peristiwa callback/webhook dari Xendit (Payment ID, Event Type, Payload JSON).
+10. `audit_logs` — Rekam jejak aktivitas audit perubahan data (User ID, Aksi, Nama Tabel, Record ID, Nilai Lama & Baru).
+11. `settings` — Pengaturan konfigurasi dinamis aplikasi (Batas waktu expired booking, batas OTP, email kontak).
+12. `notifications` — Notifikasi sistem pengguna (User ID, Tipe, Judul, Pesan, Status Dibaca).
+13. `otps` — Penyimpanan kode OTP verifikasi 6-digit berbatas waktu (User ID, Kode, Tujuan, Status Penggunaan, Expired At).
 
 ---
 
 ## 🛠️ PANDUAN INSTALASI & KONFIGURASI ENVIRONMENT
 
 ### 1. Persyaratan Sistem
-- **Go** v1.20 atau yang lebih baru
+- **Go** v1.25 atau yang lebih baru (sesuai `backend/go.mod`)
 - **Node.js** v18 atau yang lebih baru
 - **PostgreSQL** v14 atau yang lebih baru
 
@@ -266,6 +305,65 @@ npm run dev
 
 ---
 
+## 🐳 MENJALANKAN DENGAN DOCKER
+
+Proyek ini telah dikonfigurasi penuh dengan dukungan Docker dan Docker Compose untuk kemudahan deployment satu perintah (*one-command setup*) tanpa perlu menginstal Go, Node.js, maupun PostgreSQL secara manual di komputer lokal.
+
+### 🏗️ Arsitektur Container
+1. **`db` (PostgreSQL 16 Alpine):** Database utama dengan persistent volume (`db_data`), healthcheck otomatis (`pg_isready`), dan inisialisasi skema awal otomatis dari `backend/migrations/001_init.sql`.
+2. **`backend` (Golang 1.25 Multi-stage):** Di-build secara statis tanpa CGO menggunakan image builder Go 1.25 Alpine, kemudian dijalankan pada runtime Alpine Linux minimal yang ringan dan aman. Terkonfigurasi menunggu service `db` dalam status *healthy*.
+3. **`web` (React + Vite + Nginx):** Di-build menjadi berkas statis produksi menggunakan Node.js 20 Alpine, lalu disajikan menggunakan server web Nginx Alpine yang menangani routing SPA (Single Page Application) dan reverse proxy.
+
+### 🚀 Langkah Menjalankan dengan Docker
+
+1. **Siapkan File Environment (`.env`):**
+   Salin berkas template `.env.example` di root menjadi `.env` **sebelum** menjalankan Docker Compose (agar kredensial database dan API key terbaca):
+   ```bash
+   cp .env.example .env
+   ```
+   *(Pada Windows PowerShell: `Copy-Item .env.example .env`)*
+
+2. **Jalankan Seluruh Service Menggunakan Docker Compose:**
+   ```bash
+   docker compose up --build
+   ```
+   *Atau jalankan di latar belakang (detached mode):*
+   ```bash
+   docker compose up --build -d
+   ```
+
+3. **Inisialisasi Data Demo / Seeder (Opsional tapi Direkomendasikan):**
+   Setelah semua container berjalan, isi database dengan destinasi wisata, slot kuota, dan akun pengguna bawaan:
+   ```bash
+   docker exec -it tourism_backend /app/seed
+   ```
+
+4. **Akses Layanan:**
+   - 🌐 **Web Frontend (Nginx):** [http://localhost:3000](http://localhost:3000)
+   - ⚡ **Backend API Server:** [http://localhost:8080](http://localhost:8080)
+   - 📑 **Swagger API Docs:** [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+   - 🗄️ **PostgreSQL Database:** `localhost:5432`
+
+5. **Mematikan Service:**
+   ```bash
+   docker compose down
+   ```
+   *Jika ingin menghapus volume data database:*
+   ```bash
+   docker compose down -v
+   ```
+
+#### 🔑 Akun Bawaan Seeder (Untuk Pengujian / Demo App)
+Setelah seeder dijalankan (`go run ./cmd/seed` atau `docker exec tourism_backend /app/seed`), Anda dapat login menggunakan kredensial demo berikut:
+
+| Peran (Role) | Email | Kata Sandi (Password) | Hak Akses Utama |
+| :--- | :--- | :--- | :--- |
+| 👑 **Administrator** | `aji@example.com` | `password123` | Akses penuh Dashboard Admin, Analytics, Kelola Destinasi, Pemesanan Platform, & Kelola Users |
+| 👤 **Customer** | `budi@example.com` | `password123` | Jelajah Wisata, AI Rekomendasi, Pemesanan Tiket, Payment Xendit, & E-Ticket QR Code |
+| 👤 **Customer Alternatif** | `user1@example.com` | `password123` | Pengujian transaksi & notifikasi riwayat pemesanan pelanggan |
+
+---
+
 ## 🧪 PANDUAN PENGUJIAN (TESTING)
 
 ### 1. Menjalankan Unit Test Backend
@@ -296,7 +394,7 @@ Untuk alur demonstrasi praktis, script penjelasan di depan penguji, serta tangki
 <div align="center">
 
 ### **Aji Wardiman**
-*Fullstack Software Engineer / Golang & React Developer*
+*Junior Backend Developer (Go)*
 
 **Tugas Akhir Backend Golang Batch 2**  
 Teknologi: Golang, Gin, GORM, PostgreSQL, React 19, TypeScript, Tailwind CSS.

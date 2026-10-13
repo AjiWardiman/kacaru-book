@@ -93,7 +93,7 @@ func (r *slotRepository) DecrementUsedQuota(ctx context.Context, tx *gorm.DB, sl
 	return tx.WithContext(ctx).Model(&model.Slot{}).
 		Where("id = ?", slotID).
 		Updates(map[string]interface{}{
-			"used_quota": gorm.Expr("GREATEST(used_quota - ?, 0)", amount),
+			"used_quota": gorm.Expr("CASE WHEN COALESCE(used_quota, 0) - ? < 0 THEN 0 ELSE COALESCE(used_quota, 0) - ? END", amount, amount),
 			"updated_at": time.Now(),
 		}).Error
 }

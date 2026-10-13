@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vscode
+.env
+*.env
+*.env.*
+api.exe
+api
+seed.exe
+seed
+uploads/*
+!uploads/.gitkeep
