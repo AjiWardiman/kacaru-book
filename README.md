@@ -23,19 +23,41 @@ Berikut adalah tautan resmi dokumen perancangan, slide presentasi, dan rekaman v
 
 ---
 
+## 📸 PRATINJAU ANTARMUKA APLIKASI (SCREENSHOTS)
+
+Berikut adalah galeri tangkapan layar tampilan antarmuka sistem **Tourism Booking System (Kacaru Book)**:
+
+| 1. Katalog Wisata & Cuaca Realtime | 2. Menu Autentikasi Akun & Login |
+| :---: | :---: |
+| ![Katalog Wisata](docs/screenshots/01_katalog_wisata.png) | ![Menu Login](docs/screenshots/07_menu_login.png) |
+
+| 3. Asisten Rekomendasi AI (Claude) | 4. Pemesanan Tiket & Kuota Slot |
+| :---: | :---: |
+| ![Rekomendasi AI](docs/screenshots/02_rekomendasi_ai.png) | ![Pemesanan Tiket](docs/screenshots/03_pemesanan_tiket.png) |
+
+| 5. E-Ticket Digital dengan QR Code | 6. Dashboard Analytics Admin |
+| :---: | :---: |
+| ![E-Ticket QR Code](docs/screenshots/04_eticket_qrcode.png) | ![Dashboard Admin](docs/screenshots/05_dashboard_analytics.png) |
+
+### ⚡ Dokumentasi REST API (Swagger UI)
+![Swagger API Documentation](docs/screenshots/06_swagger_api_docs.png)
+
+---
+
 ## 📌 DAFTAR ISI
 1. [Dokumen & Media Proyek](#-dokumen--media-proyek)
-2. [Latar Belakang Proyek](#-latar-belakang-proyek)
-3. [Fitur-Fitur Unggulan](#-fitur-fitur-unggulan)
-4. [Arsitektur Sistem & Alur Data](#-arsitektur-sistem--alur-data)
-5. [Status Integrasi Frontend & Backend](#-status-integrasi-frontend--backend)
-6. [Tabel Dokumentasi API Endpoints](#-tabel-dokumentasi-api-endpoints)
-7. [Skema Database (PostgreSQL)](#-skema-database-postgresql)
-8. [Panduan Instalasi & Konfigurasi Environment](#-panduan-instalasi--konfigurasi-environment)
-9. [Menjalankan dengan Docker](#-menjalankan-dengan-docker)
-10. [Panduan Pengujian (Testing)](#-panduan-pengujian-testing)
-11. [Panduan Presentasi & Demo Aplikasi](#-panduan-presentasi--demo-aplikasi)
-12. [Profil Pengembang](#-profil-pengembang)
+2. [Pratinjau Antarmuka Aplikasi (Screenshots)](#-pratinjau-antarmuka-aplikasi-screenshots)
+3. [Latar Belakang Proyek](#-latar-belakang-proyek)
+4. [Fitur-Fitur Unggulan](#-fitur-fitur-unggulan)
+5. [Arsitektur Sistem & Alur Data](#-arsitektur-sistem--alur-data)
+6. [Status Integrasi Frontend & Backend](#-status-integrasi-frontend--backend)
+7. [Tabel Dokumentasi API Endpoints](#-tabel-dokumentasi-api-endpoints)
+8. [Skema Database (PostgreSQL)](#-skema-database-postgresql)
+9. [Panduan Instalasi & Konfigurasi Environment](#-panduan-instalasi--konfigurasi-environment)
+10. [Menjalankan dengan Docker](#-menjalankan-dengan-docker)
+11. [Panduan Pengujian (Testing)](#-panduan-pengujian-testing)
+12. [Panduan Presentasi & Demo Aplikasi](#-panduan-presentasi--demo-aplikasi)
+13. [Profil Pengembang](#-profil-pengembang)
 
 ---
 
